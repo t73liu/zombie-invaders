@@ -4,10 +4,11 @@ public class PlayerController : MonoBehaviour
 {
     public float travelDistance = 200f;
     public float spritePadding = 40f;
-    public float xMin;
-    public float xMax;
-    public float yMin;
-    public float yMax;
+    public GameObject bullet;
+    private float xMin;
+    private float xMax;
+    private float yMin;
+    private float yMax;
 
     private void Start()
     {
@@ -41,6 +42,9 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.Space))
         {
+            Instantiate(bullet,
+                new Vector3(transform.position.x, transform.position.y + spritePadding, transform.position.z + 1f),
+                Quaternion.identity);
         }
         float xMoveLimit = Mathf.Clamp(transform.position.x, xMin, xMax);
         transform.position = new Vector3(xMoveLimit, transform.position.y, transform.position.z);
