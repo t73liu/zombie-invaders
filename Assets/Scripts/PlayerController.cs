@@ -2,13 +2,16 @@
 
 public class PlayerController : MonoBehaviour
 {
-    public float travelDistance = 200f;
+    public float moveSpeed = 400f;
+    private float bulletSpeed;
     public float spritePadding = 40f;
+    public float shootIntervals = 2f;
     public GameObject bullet;
     private float xMin;
     private float xMax;
     private float yMin;
     private float yMax;
+    private SceneLoader loader;
 
     private void Start()
     {
@@ -19,6 +22,14 @@ public class PlayerController : MonoBehaviour
         xMax = topRight.x - spritePadding;
         yMin = botLeft.y + spritePadding;
         yMax = topRight.y - spritePadding;
+        bulletSpeed = moveSpeed + 50f;
+        loader = FindObjectOfType<SceneLoader>();
+    }
+
+    private void Shoot()
+    {
+        GameObject bulletInstance = Instantiate(bullet, transform.position, Quaternion.identity);
+        bulletInstance.GetComponent<Rigidbody2D>().velocity = new Vector2(0f, bulletSpeed);
     }
 
     // Update is called once per frame
@@ -26,29 +37,36 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            transform.position += Vector3.left * travelDistance * Time.deltaTime;
+            transform.position += Vector3.left * moveSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.RightArrow))
         {
-            transform.position += Vector3.right * travelDistance * Time.deltaTime;
+            transform.position += Vector3.right * moveSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            transform.position += Vector3.up * travelDistance * Time.deltaTime;
+            transform.position += Vector3.up * moveSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.DownArrow))
         {
-            transform.position += Vector3.down * travelDistance * Time.deltaTime;
+            transform.position += Vector3.down * moveSpeed * Time.deltaTime;
         }
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            Instantiate(bullet,
-                new Vector3(transform.position.x, transform.position.y + spritePadding, transform.position.z + 1f),
-                Quaternion.identity);
+            InvokeRepeating("Shoot", 0.00001f, shootIntervals);
+        }
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            CancelInvoke("Shoot");
         }
         float xMoveLimit = Mathf.Clamp(transform.position.x, xMin, xMax);
         transform.position = new Vector3(xMoveLimit, transform.position.y, transform.position.z);
         float yMoveLimit = Mathf.Clamp(transform.position.y, yMin, yMax);
         transform.position = new Vector3(transform.position.x, yMoveLimit, transform.position.z);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collider)
+    {
+        loader.Load("LoseScreen");
     }
 }
