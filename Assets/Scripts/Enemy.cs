@@ -18,7 +18,7 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        if (Random.value < fireChance * Time.deltaTime)
+        if (Random.value < (fireChance * Time.deltaTime))
         {
             Shoot();
         }
@@ -46,6 +46,7 @@ public class Enemy : MonoBehaviour
             int damageTaken = bullet.GetDamage();
             Debug.Log("bullet hit for " + damageTaken);
             hp -= damageTaken;
+            GetComponent<AudioSource>().Play();
             Destroy(collider.gameObject);
             if (hp <= 0)
             {

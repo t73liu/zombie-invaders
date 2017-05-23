@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     public float spritePadding = 40f;
     public float shootIntervals = 2f;
     public GameObject bullet;
+
     private float xMin;
     private float xMax;
     private float yMin;
@@ -30,6 +31,7 @@ public class PlayerController : MonoBehaviour
     {
         GameObject bulletInstance = Instantiate(bullet, transform.position, Quaternion.identity);
         bulletInstance.GetComponent<Rigidbody2D>().velocity = new Vector2(0f, bulletSpeed);
+        GetComponent<AudioSource>().Play();
     }
 
     // Update is called once per frame
